@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.2)
 
 project(ip_filter VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_RUNTIME ON)
+
+find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
 configure_file(in.version.h version.h)
 
@@ -17,12 +20,12 @@ set_target_properties(ip_filter ip_filter_test PROPERTIES
 )
 
 set_target_properties(ip_filter_test PROPERTIES
-    COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
+    COMPILE_DEFINITIONS BOOST_TEST_STATIC_LINK
     INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 )
 
 target_link_libraries(ip_filter
-    boost_program_options
+    ${Boost_LIBRARIES}
 )
 
 target_link_libraries(ip_filter_test
@@ -43,4 +46,4 @@ include(CPack)
 
 enable_testing()
 
-add_test(otus_lessons_04_02_test ip_filter_test)
+add_test(ip_filter ip_filter_test)
