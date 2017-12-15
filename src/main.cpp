@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     } else {
         auto ips = ips_read(std::cin);
 
-        std::sort(ips.begin(), ips.end(), [](uint32_t a, uint32_t b)->bool{ return a > b; });
+        std::sort(ips.begin(), ips.end(), [](uint32_t a, uint32_t b){ return a > b; });
 
         ips_dump(std::cout, ips); // full
         ips_dump(std::cout, ips_filter(ips, [](uint32_t a){ return (a>>24) == 1 ;})); // 1st byte == 1;
