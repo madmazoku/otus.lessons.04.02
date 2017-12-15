@@ -11,22 +11,22 @@ add_executable(ip_filter main.cpp)
 add_executable(ip_filter_test test.cpp)
 
 set_target_properties(ip_filter ip_filter_test PROPERTIES
-	CXX_STANDARD 14
-	CXX_STANDARD_REQUIRED ON
-	COMPILE_OPTIONS -Wpedantic -Wall -Wextra
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+    COMPILE_OPTIONS -Wpedantic -Wall -Wextra
 )
 
 set_target_properties(ip_filter_test PROPERTIES
-	COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
-	INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+    COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
+    INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 )
 
 target_link_libraries(ip_filter
-    ${Boost_LIBRARIES}
+    boost_program_options
 )
 
 target_link_libraries(ip_filter_test
-	${Boost_LIBRARIES}
+    ${Boost_LIBRARIES}
 )
 
 install(TARGETS ip_filter RUNTIME DESTINATION bin)
