@@ -5,6 +5,7 @@ before_script:
 - sudo apt-get update -qq
 - sudo apt-get install libspdlog-dev -y
 script:
+- mkdir bin
 - cd bin
 - cmake ../src
 - make all
