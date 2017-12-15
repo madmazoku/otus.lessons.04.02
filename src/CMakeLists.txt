@@ -1,35 +1,35 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(otus_lessons_04_02 VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+project(ip_filter VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 configure_file(in.version.h version.h)
 
-add_executable(otus_lessons_04_02_main_cli main.cpp)
+add_executable(ip_filter main.cpp)
 
-add_executable(otus_lessons_04_02_test_cli test.cpp)
+add_executable(ip_filter_test test.cpp)
 
-set_target_properties(otus_lessons_04_02_main_cli otus_lessons_04_02_test_cli PROPERTIES
+set_target_properties(ip_filter ip_filter_test PROPERTIES
 	CXX_STANDARD 14
 	CXX_STANDARD_REQUIRED ON
 	COMPILE_OPTIONS -Wpedantic -Wall -Wextra
 )
 
-set_target_properties(otus_lessons_04_02_test_cli PROPERTIES
+set_target_properties(ip_filter_test PROPERTIES
 	COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
 	INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(otus_lessons_04_02_main_cli
+target_link_libraries(ip_filter
 	boost_program_options
 )
 
-target_link_libraries(otus_lessons_04_02_test_cli
+target_link_libraries(ip_filter_test
 	${Boost_LIBRARIES}
 )
 
-install(TARGETS otus_lessons_04_02_main_cli RUNTIME DESTINATION bin)
+install(TARGETS ip_filter RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 
@@ -43,4 +43,4 @@ include(CPack)
 
 enable_testing()
 
-add_test(otus_lessons_04_02_test otus_lessons_04_02_test_cli)
+add_test(otus_lessons_04_02_test ip_filter_test)

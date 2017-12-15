@@ -51,6 +51,7 @@ BOOST_AUTO_TEST_CASE( test_str2ip )
 
     BOOST_CHECK_EQUAL(str2ip("1.2.3.4\t5\t6\n"), 0x01020304);
     BOOST_CHECK_EQUAL(str2ip("1.2.3.\t5\t6\n"), 0x01020300);
+    BOOST_CHECK_EQUAL(str2ip("1.2.3\t5\t6\n"), 0x01020300);
     BOOST_CHECK_EQUAL(str2ip("1.2.3."), 0x01020300);
     BOOST_CHECK_EQUAL(str2ip("1.2.3"), 0x01020300);
     BOOST_CHECK_EQUAL(str2ip("1.2."), 0x01020000);
