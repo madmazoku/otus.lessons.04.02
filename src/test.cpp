@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE( test_ips_read )
     ss << "157.39.22.224\t5\t6\n";
     ss << "79.180.73.190\t2\t1\n";
 
-    BOOST_TEST(compare_collections(ips_read(ss), {0x71a2919c, 0x9d2716e0, 0x4fb449be}));
+    BOOST_CHECK(compare_collections(ips_read(ss), {0x71a2919c, 0x9d2716e0, 0x4fb449be}));
 }
 
 BOOST_AUTO_TEST_CASE( test_ips_dump )
@@ -89,6 +89,16 @@ BOOST_AUTO_TEST_CASE( test_ips_dump )
     ips_dump(ss, ips);
 
     BOOST_CHECK_EQUAL(ss.str(), "113.162.145.156\n157.39.22.224\n79.180.73.190\n");
+}
+
+BOOST_AUTO_TEST_CASE( test_ips_filter )
+{
+    std::vector<uint32_t> ips{0x71a2919c, 0x9d2716e0, 0x4fb449be};
+
+    BOOST_CHECK(compare_collections(ips_filter(ips, [](auto a)->bool{ return true; }), {0x71a2919c, 0x9d2716e0, 0x4fb449be}));
+    BOOST_CHECK(compare_collections(ips_filter(ips, [](auto a)->bool{ return false; }), {}));
+    BOOST_CHECK(compare_collections(ips_filter(ips, [](auto a)->bool{ return (a >> 16)&0x01 ? true : false; }), {0x9d2716e0}));
+    BOOST_CHECK(compare_collections(ips_filter(ips, [](auto a)->bool{ return (a >> 8)&0x01 ? true : false; }), {0x71a2919c, 0x4fb449be}));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

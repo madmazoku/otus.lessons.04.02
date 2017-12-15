@@ -34,11 +34,10 @@ std::string ip2str(const uint32_t &ip) {
 
 auto ips_read(std::istream& in)
 {
-    std::vector< uint32_t > ips;
+    std::vector<uint32_t> ips;
     for(std::string line; std::getline(in, line);) {
         ips.push_back(str2ip(line));
     }
-
     return ips;
 }
 
@@ -52,6 +51,8 @@ template<typename Predicat>
 auto ips_filter(const std::vector<uint32_t> &ips, Predicat predicat)
 {
     std::vector<uint32_t> filtered;
-    std::copy_if(ips.begin(), ips.end(), filtered.begin(), predicat);
+    for(const auto &ip : ips)
+        if(predicat(ip))
+            filtered.push_back(ip);
     return filtered;
 }

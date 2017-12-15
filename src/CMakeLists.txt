@@ -22,12 +22,10 @@ set_target_properties(otus_lessons_04_02_test_cli PROPERTIES
 )
 
 target_link_libraries(otus_lessons_04_02_main_cli
-	pthread
 	boost_program_options
 )
 
 target_link_libraries(otus_lessons_04_02_test_cli
-	pthread
 	${Boost_LIBRARIES}
 )
 
