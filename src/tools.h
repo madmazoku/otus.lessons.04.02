@@ -35,9 +35,8 @@ std::string ip2str(const uint32_t &ip) {
 auto ips_read(std::istream& in)
 {
     std::vector<uint32_t> ips;
-    for(std::string line; std::getline(in, line);) {
+    for(std::string line; std::getline(in, line);)
         ips.push_back(str2ip(line));
-    }
     return ips;
 }
 

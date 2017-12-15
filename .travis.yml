@@ -6,8 +6,6 @@ before_script:
 - sudo apt-get update -qq
 - sudo apt-get install libspdlog-dev -y
 script:
-- ls /usr/lib/ -d
-- ls /usr/lib/x86_64-linux-gnu/*boost*.a
 - mkdir bin
 - cd bin
 - cmake ../src

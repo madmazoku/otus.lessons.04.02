@@ -25,7 +25,7 @@ set_target_properties(ip_filter_test PROPERTIES
 )
 
 target_link_libraries(ip_filter
-    ${Boost_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 
 target_link_libraries(ip_filter_test
