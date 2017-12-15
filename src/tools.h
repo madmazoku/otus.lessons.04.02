@@ -2,72 +2,56 @@
 
 #include <boost/lexical_cast.hpp>
 
-template <typename Td>
-auto split(const std::string &str, Td d)
-{
-    std::vector<std::string> r;
+uint32_t str2ip(const std::string& str) {
+    uint32_t ip = 0;
+    uint32_t part = 0;
+    uint32_t part_count = 0;
 
-    std::string::size_type start = 0;
-    std::string::size_type stop = str.find_first_of(d);
-    while(stop != std::string::npos)
-    {
-        r.push_back(str.substr(start, stop - start));
-
-        start = stop + 1;
-        stop = str.find_first_of(d, start);
-    }
-
-    r.push_back(str.substr(start));
-
-    return r;
-}
-
-template<typename T>
-auto splice(const T& col, const unsigned int& start, const unsigned int& end) 
-{
-    T before;
-    T in;
-    T after;
-    unsigned int count = 0;
-    for(const auto& e : col) {
-        if(count < start) {
-            before.push_back(e);
-        } else if(count < end) {
-            in.push_back(e);
-        } else {
-            after.push_back(e);
-        }
-    }
-    return std::make_tuple(before, in, after);
-}
-
-template<typename Tc = std::initializer_list<std::string>, typename Td >
-auto join(const Tc& col, const Td& d, const unsigned int& n = 0)
-{
-    unsigned int c = 0;
-    std::string str;
-    for(const auto& e : col) {
-        if(!str.empty())
-            str = str + boost::lexical_cast<std::string>(d);
-        str = str + boost::lexical_cast<std::string>(e);
-        if(n != 0 && ++c == n)
+    for(const auto& c : str) {
+        if(std::isdigit(c))
+            part = (part * 10) + (c - '0');
+        else if(c == '.') {
+            if(++part_count == 4)
+                break;
+            ip = (ip << 8) + part;
+            part = 0;
+        } else
             break;
     }
-    return str;
+    ip = (ip << 8) + part;
+    if(++part_count < 4)
+        ip = ip << ((4 - part_count) << 3);
+
+    return ip;
 }
 
-auto ip_read(std::istream& in)
+std::string ip2str(const uint32_t &ip) {
+    return boost::lexical_cast<std::string>(ip>>24) + "." +
+        boost::lexical_cast<std::string>((ip>>16)&0xff) + "." +
+        boost::lexical_cast<std::string>((ip>>8)&0xff) + "." +
+        boost::lexical_cast<std::string>(ip&0xff);
+}
+
+auto ips_read(std::istream& in)
 {
-    std::vector< std::vector<std::string> > ips;
+    std::vector< uint32_t > ips;
     for(std::string line; std::getline(in, line);) {
-        ips.push_back(split(line, ".\t"));
+        ips.push_back(str2ip(line));
     }
 
     return ips;
 }
 
-void ip_dump(std::ostream& out, const std::vector< std::vector<std::string> > &ips)
+void ips_dump(std::ostream& out, const std::vector<uint32_t> &ips)
 {
     for(const auto &ip : ips)
-        out << join(ip, '.', 4) << std::endl;
+        out << ip2str(ip) << std::endl;
+}
+
+template<typename Predicat>
+auto ips_filter(const std::vector<uint32_t> &ips, Predicat predicat)
+{
+    std::vector<uint32_t> filtered;
+    std::copy_if(ips.begin(), ips.end(), filtered.begin(), predicat);
+    return filtered;
 }
