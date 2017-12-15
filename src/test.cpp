@@ -11,24 +11,23 @@
 template<typename T>
 boost::test_tools::predicate_result compare_collections(const T &got, const T &expect)
 {
-  if( got.size() != expect.size() )
-  {
-    boost::test_tools::predicate_result res( false );
-    res.message() << "Size mismatch [" << got.size() << "!=" << expect.size() << "]";
-    return res;
-  }
-
-  auto g = got.begin();
-  auto e = expect.begin();
-  for(unsigned int i = 0; g != got.end(); ++g, ++e, ++i) {
-    if(*g != *e) {
+    if( got.size() != expect.size() ) {
         boost::test_tools::predicate_result res( false );
-        res.message() << "Element " << i << " mismatch [ \"" << *g << "\" != \"" << *e << "\" ]";
+        res.message() << "Size mismatch [" << got.size() << "!=" << expect.size() << "]";
         return res;
     }
-  }
 
-  return true;
+    auto g = got.begin();
+    auto e = expect.begin();
+    for(unsigned int i = 0; g != got.end(); ++g, ++e, ++i) {
+        if(*g != *e) {
+            boost::test_tools::predicate_result res( false );
+            res.message() << "Element " << i << " mismatch [ \"" << *g << "\" != \"" << *e << "\" ]";
+            return res;
+        }
+    }
+
+    return true;
 }
 
 BOOST_AUTO_TEST_SUITE( test_suite )

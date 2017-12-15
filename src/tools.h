@@ -2,7 +2,8 @@
 
 #include <boost/lexical_cast.hpp>
 
-uint32_t str2ip(const std::string& str) {
+uint32_t str2ip(const std::string& str)
+{
     uint32_t ip = 0;
     uint32_t part = 0;
     uint32_t part_count = 0;
@@ -25,11 +26,12 @@ uint32_t str2ip(const std::string& str) {
     return ip;
 }
 
-std::string ip2str(const uint32_t &ip) {
+std::string ip2str(const uint32_t &ip)
+{
     return boost::lexical_cast<std::string>(ip>>24) + "." +
-        boost::lexical_cast<std::string>((ip>>16)&0xff) + "." +
-        boost::lexical_cast<std::string>((ip>>8)&0xff) + "." +
-        boost::lexical_cast<std::string>(ip&0xff);
+           boost::lexical_cast<std::string>((ip>>16)&0xff) + "." +
+           boost::lexical_cast<std::string>((ip>>8)&0xff) + "." +
+           boost::lexical_cast<std::string>(ip&0xff);
 }
 
 auto ips_read(std::istream& in)
