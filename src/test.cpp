@@ -94,10 +94,10 @@ BOOST_AUTO_TEST_CASE( test_ips_filter )
 {
     std::vector<uint32_t> ips{0x71a2919c, 0x9d2716e0, 0x4fb449be};
 
-    BOOST_CHECK(compare_collections(ips_filter(ips, [](uint32_t a)->bool{ return true; }), {0x71a2919c, 0x9d2716e0, 0x4fb449be}));
-    BOOST_CHECK(compare_collections(ips_filter(ips, [](uint32_t a)->bool{ return false; }), {}));
-    BOOST_CHECK(compare_collections(ips_filter(ips, [](uint32_t a)->bool{ return (a >> 16)&0x01 ? true : false; }), {0x9d2716e0}));
-    BOOST_CHECK(compare_collections(ips_filter(ips, [](uint32_t a)->bool{ return (a >> 8)&0x01 ? true : false; }), {0x71a2919c, 0x4fb449be}));
+    BOOST_CHECK(compare_collections(ips_filter(ips, [](uint32_t a){ return true; }), {0x71a2919c, 0x9d2716e0, 0x4fb449be}));
+    BOOST_CHECK(compare_collections(ips_filter(ips, [](uint32_t a){ return false; }), {}));
+    BOOST_CHECK(compare_collections(ips_filter(ips, [](uint32_t a){ return (a >> 16)&0x01 ? true : false; }), {0x9d2716e0}));
+    BOOST_CHECK(compare_collections(ips_filter(ips, [](uint32_t a){ return (a >> 8)&0x01 ? true : false; }), {0x71a2919c, 0x4fb449be}));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
