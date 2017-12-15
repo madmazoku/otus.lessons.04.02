@@ -11,6 +11,7 @@ script:
 - make all
 - make test
 - make package
+- ./ip_filter --version
 deploy:
   provider: script
   skip_cleanup: true

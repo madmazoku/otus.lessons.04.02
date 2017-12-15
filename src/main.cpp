@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <boost/program_options.hpp>
+#include <boost/version.hpp>
 
 #include "../bin/version.h"
 
@@ -18,7 +19,8 @@ int main(int argc, char** argv) {
     if (vm.count("help")) {  
         std::cout << desc << std::endl;
     } else if (vm.count("version")) {  
-        std::cout << "Version: " << version() << std::endl;
+        std::cout << "Build version: " << version() << std::endl;
+        std::cout << "Boost version: " << (BOOST_VERSION / 100000) << '.' << (BOOST_VERSION / 100 % 1000) << '.' << (BOOST_VERSION % 100) << std::endl;
     } else {
         auto ips = ips_read(std::cin);
 

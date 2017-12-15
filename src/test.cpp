@@ -7,7 +7,6 @@
 #include "tools.h"
 
 #include <iostream>
-#include <boost/type_index.hpp>
 
 template<typename T>
 boost::test_tools::predicate_result compare_collections(const T &got, const T &expect)
