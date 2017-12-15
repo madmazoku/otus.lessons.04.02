@@ -5,14 +5,12 @@ before_script:
 - sudo apt-get update -qq
 - sudo apt-get install libspdlog-dev -y
 script:
-- cat /usr/include/boost/version.hpp
 - mkdir bin
 - cd bin
 - cmake ../src
 - make all
 - make test
 - make package
-- ./ip_filter --version
 deploy:
   provider: script
   skip_cleanup: true
