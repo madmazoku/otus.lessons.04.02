@@ -26,7 +26,7 @@ uint32_t str2ip(const std::string& str)
     return ip;
 }
 
-std::string ip2str(const uint32_t &ip)
+std::string ip2str(const uint32_t ip)
 {
     return boost::lexical_cast<std::string>(ip>>24) + "." +
            boost::lexical_cast<std::string>((ip>>16)&0xff) + "." +
