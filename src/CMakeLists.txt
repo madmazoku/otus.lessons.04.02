@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(ip_filter VERSION 0.3.$ENV{TRAVIS_BUILD_NUMBER})
+project(ip_filter VERSION 0.4.$ENV{TRAVIS_BUILD_NUMBER})
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_STATIC_RUNTIME ON)
