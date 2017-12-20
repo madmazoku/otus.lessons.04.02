@@ -79,14 +79,22 @@ bool op_or(F f, R ...r)
 }
 
 // check any item in sequency equality
-template<typename Octet, size_t... I>
-bool check_any_impl(const decltype(str2ip("")) &ip, Octet octet, std::index_sequence<I...>)
-{
-    return op_or((std::get<I>(ip) == octet)...);
-}
-template<typename Octet, typename Indices = std::make_index_sequence<4> >
+template<size_t N, typename Octet >
+struct check {
+    static bool any(const decltype(str2ip("")) &ip, Octet octet)
+    {
+        return std::get<N>(ip) == octet || check<N+1, Octet>::any(ip, octet);
+    }
+};
+template<typename Octet >
+struct check<4, Octet> {
+    static bool any(const decltype(str2ip("")) &ip, Octet octet)
+    {
+        return false;
+    }
+};
+template<typename Octet>
 bool check_any(const decltype(str2ip("")) &ip, Octet octet)
 {
-    return check_any_impl(ip, octet, Indices{});
+    return check<0,Octet>::any(ip, octet);
 }
-
