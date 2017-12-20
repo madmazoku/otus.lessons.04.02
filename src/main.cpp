@@ -25,20 +25,28 @@ int main(int argc, char** argv)
     } else {
         auto ips = ips_read(std::cin);
 
-        std::sort(ips.begin(), ips.end(), [](const uint32_t a, const uint32_t b) {
-            return a > b;
-        });
+        std::sort(std::begin(ips), std::end(ips));
+        std::reverse(std::begin(ips), std::end(ips));
 
         ips_dump(std::cout, ips); // full
-        ips_dump(std::cout, ips_filter(ips, [](const uint32_t a) {
-            return (a>>24) == 1 ;
-        })); // 1st byte == 1;
-        ips_dump(std::cout, ips_filter(ips, [](const uint32_t a) {
-            return (a>>16) == ((46<<8)|70) ;
-        })); // 1st byte = 46, 2nd byte = 70;
-        ips_dump(std::cout, ips_filter(ips, [](const uint32_t a) {
-            return (a>>24) == 46 || ((a>>16)&0xff) == 46 || ((a>>8)&0xff) == 46 || (a&0xff) == 46 ;
-        })); // any byte == 46
+
+        decltype(ips) ips_filter_1;
+        std::copy_if(std::begin(ips), std::end(ips), std::back_inserter(ips_filter_1), [](const decltype(str2ip("")) &a) {
+            return check_sequence(a, 1);
+        });
+        ips_dump(std::cout, ips_filter_1); // 1st byte == 1;
+
+        decltype(ips) ips_filter_2;
+        std::copy_if(std::begin(ips), std::end(ips), std::back_inserter(ips_filter_2), [](const decltype(str2ip("")) &a) {
+            return check_sequence(a, 46, 70);
+        });
+        ips_dump(std::cout, ips_filter_2); // 1st byte = 46, 2nd byte = 70;
+
+        decltype(ips) ips_filter_3;
+        std::copy_if(std::begin(ips), std::end(ips), std::back_inserter(ips_filter_3), [](const decltype(str2ip("")) &a) {
+            return check_any(a, 46);
+        });
+        ips_dump(std::cout, ips_filter_3); // any byte == 46
     }
 
     return 0;

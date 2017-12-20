@@ -1,59 +1,91 @@
 #pragma once
 
 #include <boost/lexical_cast.hpp>
+#include <iostream>
 
-uint32_t str2ip(const std::string& str)
+std::vector<std::string> split(const std::string &str, const char* d)
 {
-    uint32_t ip = 0;
-    uint32_t part = 0;
-    uint32_t part_count = 0;
+    std::vector<std::string> r;
 
-    for(const auto& c : str) {
-        if(std::isdigit(c))
-            part = (part * 10) + (c - '0');
-        else if(c == '.') {
-            if(++part_count == 4)
-                break;
-            ip = (ip << 8) + part;
-            part = 0;
-        } else
-            break;
+    std::string::size_type start = 0;
+    std::string::size_type stop = str.find_first_of(d);
+    while(stop != std::string::npos) {
+        r.push_back(str.substr(start, stop - start));
+
+        start = stop + 1;
+        stop = str.find_first_of(d, start);
     }
-    ip = (ip << 8) + part;
-    if(++part_count < 4)
-        ip = ip << ((4 - part_count) << 3);
 
-    return ip;
+    r.push_back(str.substr(start));
+
+    return r;
 }
 
-std::string ip2str(const uint32_t ip)
+auto str2ip(const std::string& str = "")
 {
-    return boost::lexical_cast<std::string>(ip>>24) + "." +
-           boost::lexical_cast<std::string>((ip>>16)&0xff) + "." +
-           boost::lexical_cast<std::string>((ip>>8)&0xff) + "." +
-           boost::lexical_cast<std::string>(ip&0xff);
+    auto ip = split(str, ".\t");
+
+    return std::make_tuple(
+               ip.size() > 0 ? boost::lexical_cast<uint32_t>(ip[0]) : 0,
+               ip.size() > 1 ? boost::lexical_cast<uint32_t>(ip[1]) : 0,
+               ip.size() > 2 ? boost::lexical_cast<uint32_t>(ip[2]) : 0,
+               ip.size() > 3 ? boost::lexical_cast<uint32_t>(ip[3]) : 0
+           );
+}
+
+std::string ip2str(const decltype(str2ip()) ip)
+{
+    return boost::lexical_cast<std::string>(std::get<0>(ip)) + "." +
+           boost::lexical_cast<std::string>(std::get<1>(ip)) + "." +
+           boost::lexical_cast<std::string>(std::get<2>(ip)) + "." +
+           boost::lexical_cast<std::string>(std::get<3>(ip));
 }
 
 auto ips_read(std::istream& in)
 {
-    std::vector<uint32_t> ips;
+    std::vector<decltype(str2ip())> ips;
     for(std::string line; std::getline(in, line);)
         ips.push_back(str2ip(line));
     return ips;
 }
 
-void ips_dump(std::ostream& out, const std::vector<uint32_t> &ips)
+void ips_dump(std::ostream& out, const decltype(ips_read(std::cin)) &ips)
 {
     for(const auto &ip : ips)
         out << ip2str(ip) << std::endl;
 }
 
-template<typename Predicat>
-auto ips_filter(const std::vector<uint32_t> &ips, Predicat predicat)
+// check sequental item equality
+template<size_t N = 0> bool check_sequence(const decltype(str2ip("")) &ip)
 {
-    std::vector<uint32_t> filtered;
-    for(const auto &ip : ips)
-        if(predicat(ip))
-            filtered.push_back(ip);
-    return filtered;
+    return true;
 }
+template<size_t N = 0, typename Octet, typename... Octets>
+bool check_sequence(const decltype(str2ip("")) &ip, Octet octet, Octets... octets)
+{
+    return std::get<N>(ip) == octet && check_sequence<N+1>(ip, octets...);
+}
+
+// multi or operator
+bool op_or()
+{
+    return false;
+}
+template<typename F, typename ...R>
+bool op_or(F f, R ...r)
+{
+    return f || op_or(r...);
+}
+
+// check any item in sequency equality
+template<typename Octet, size_t... I>
+decltype(auto) check_any_impl(const decltype(str2ip("")) &ip, Octet octet, std::index_sequence<I...>)
+{
+    return op_or((std::get<I>(ip) == octet)...);
+}
+template<typename Octet, typename Indices = std::make_index_sequence<4> >
+decltype(auto) check_any(const decltype(str2ip("")) &ip, Octet octet)
+{
+    return check_any_impl(ip, octet, Indices{});
+}
+
